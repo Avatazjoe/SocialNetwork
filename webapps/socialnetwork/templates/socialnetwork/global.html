@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block title %}Global{% endblock %}
+
+{% block navbar %}
+<ul class = "nav navbar-nav">
+  <li class = "active"><a href = "{% url 'profile' %}">Home</a></li>
+  <li class = "btn-link"><a href = "{% url 'follow_stream' %}">follow</a></li>
+</ul>
+<ul class = "nav navbar-nav navbar-right">
+  <li><a class="btn-link" href = "{% url 'logout' %}">Logout</a></li>
+</ul>
+{% endblock %}
+
+{% block head %}
+{% load staticfiles %}
+<script type="text/javascript" src="{% static 'js/socialnetwork.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/addComments.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/getComments.js' %}"></script>
+{% endblock %}
+
+{% block page-header %}Global Posts{% endblock %}
+
+{% block content %}
+<div id = "username" class = "invisible">
+	{{ request.user.username }}
+</div>
+<div class = "row">
+  <div class = "col-md-12" id = "postInfo">
+ {% for post in posts %}
+  <div id = "postgroup{{ post.pk }}">
+  <table class = "table">
+    {% if post.user.username != request.user.username %}
+    <th><a href = "{% url 'other_profile' post.user.username %}" >{{ post.user.username }}</a></th>
+    {% else %}
+	<th><a href = "{% url 'profile' %}" >{{ post.user.username }}</a></th>
+	{% endif %}
+	<th>{{ post.post_time}}</th>
+    {% if post in follow_posts %}
+	<th><a href = "{% url 'unfollow' post.user.username %}">unfollow</a><th>
+	{% else %}
+    <th><a href = "{% url 'follow' post.user.username %}">follow</a><th>
+    {% endif %}	 	 
+  </table>
+  <div class = "row">
+    <div class = "col-md-1"> 
+      <img class = "img-thumbnail thumbnailsize" src = "{% url 'photo' post.user.username %}" alt = "{{ other_info.first_name }} {{ other_info.last_name }}" >
+    </div>
+	<div class = "col-md-11">
+	  <div class = "well breaklines">
+      {{ post.text }}
+      </div>
+	 <div class = "collapse" id = "comments{{ post.pk }}">
+	  <div id = "commentgroup{{ post.pk }}">
+	  </div>
+      <label for = "comment">Make a comment</label>		
+	  <input class = "form-control" type = "text" name = "comment" id = "commenttext{{ post.pk }}"></input>
+	  <div class = "form-group">
+     	<input type = "hidden" name = "post" value = "{{ post.pk }}" ></input>
+	  </div>
+	  <input class="btn btn-sm btn-primary" id = "docomment{{ post.pk }}" onclick = "addComment(this)" type = "submit" text = "new_comment">
+	</div>
+	<button type="button" class="btn btn-default pull-right" data-toggle = "collapse" data-target = "#comments{{ post.pk }}"
+        aria-expanded = "false" aria-controls = "comments{{ post.pk }}" onclick = "sendCommentRequest(this)" id = "getcomment{{ post.pk }}">
+      <span class = "glyphicon glyphicon-menu-hamburger" aria-hidden="true"></span>
+    </button>
+	</div>
+	</div>
+  </div>
+  {% endfor %}
+  </div>	
+</div>
+{% endblock %}

@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+{% block title %}Profile{% endblock %}
+
+
+{% block navbar %}
+<ul class = "nav navbar-nav">
+  <li class = "active"><a href = "{% url 'profile' %}">Home</a></li>
+  <li class = "btn-link"><a href = "{% url 'follow_stream' %}">follow</a></li>
+</ul>
+<ul class = "nav navbar-nav navbar-right">
+  <li><a class="btn-link" href = "{% url 'logout' %}">Logout</a></li>
+</ul>
+
+{% endblock %}
+
+{% block head %}
+{% load staticfiles %}
+<script type="text/javascript" src="{% static 'js/addComments.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/getComments.js' %}"></script>
+{% endblock %}
+
+{% block page-header %}Profile{% endblock %}
+
+  
+
+
+{% block content %}
+<div class = "container-fluid">
+  <div class = "row">
+    <div class = "col-md-4">
+      <img src = "{% url 'photo' name %}" alt = "{{ self_info.first_name }} {{ self_info.last_name }}" class = "img-rounded" width = "250px" height = "250">
+    </div>
+	<div class = "col-md-4">
+	  <h3>First Name:</h3>
+	  <p class = "lead">{{ self_info.first_name }}</p>
+	  <h3>Last Name:</h3>
+	  <p class = "lead">{{ self_info.last_name }}</p>
+	  <h3>Age:</h3>
+	  <p class = "lead">{{ self_info.age }}</p>
+	</div>
+	<div class = "col-md-4">
+	  <h2>Bio:</h2>
+	  <div class = "well breaklines">{{ self_info.bio }}</div>
+	</div>
+  </div>
+  <p><a class = "btn btn-lg btn-primary" href = "{% url 'edit' %}" role = "button">Edit Information</a></p>
+</div>
+
+<div class = "row">
+  <div class = "col-md-12">
+  {% for post in posts %}
+  <table class = "table">
+      <tr>
+	    <th>{{ post.user.username }}</th>
+		<th>{{ post.post_time}}</th>
+	    <th><a class="btn-link" href="{% url 'delete' post.id %}">delete</a><th>
+	  </tr>
+  </table>
+    <div class = "well breaklines">
+    {{ post.text }}
+    </div>
+	<div class = "collapse" id = "comments{{ post.pk }}">
+	  <div id = "commentgroup{{ post.pk }}">
+	  </div>
+      <label for = "comment">Make a comment</label>		
+	  <input class = "form-control" type = "text" name = "comment" id = "commenttext{{ post.pk }}"></input>
+	  <div class = "form-group">
+     	<input type = "hidden" name = "post" value = "{{ post.pk }}" ></input>
+	  </div>
+	  <input class="btn btn-sm btn-primary" id = "docomment{{ post.pk }}" onclick = "addComment(this)" type = "submit" text = "new_comment">
+	</div>
+	<button type="button" class="btn btn-default pull-right" data-toggle = "collapse" data-target = "#comments{{ post.pk }}"
+        aria-expanded = "false" aria-controls = "comments{{ post.pk }}" onclick = "sendCommentRequest(this)" id = "getcomment{{ post.pk }}">
+      <span class = "glyphicon glyphicon-menu-hamburger" aria-hidden="true"></span>
+    </button>
+    {% endfor %}
+  </div>  
+</div>
+<form method = "post" action="{% url 'do_post' %}">
+  <label for ="post">Post a new information</label>
+  <div class = "form-group">
+    <textarea class = "form-control" cols="125" rows = "5" type = "text" name = "post">
+	</textarea>
+  </div>
+  <input class="btn btn-lg btn-primary" type = "submit" text = "new post">
+  {% if errors %}
+  {{ errors }}
+  {% endif %}
+  {% csrf_token %}
+</form>
+{% endblock %}

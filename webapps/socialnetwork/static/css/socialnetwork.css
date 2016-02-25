@@ -1,0 +1,9 @@
+.breaklines{
+	width: calc(100%);
+	word-break : break-all;
+}
+
+.thumbnailsize{
+	width : 70px;
+	height : 50px;
+}

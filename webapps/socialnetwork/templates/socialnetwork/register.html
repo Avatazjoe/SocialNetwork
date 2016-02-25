@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block title %}Register{% endblock %}
+
+{% block navbar %}
+<ul class = "nav navbar-nav">
+  <li class = "active"><a href = "{% url 'profile' %}">Home</a></li>  
+</ul>
+{% endblock%}
+
+{% block page-header %}Register{% endblock %}
+
+{% block content %}
+  <form method = "post" action = "{% url 'register' %}">
+  {% for field in form.visible_fields %}
+	<div class="form-group">
+	  <label for="id_username">{{ field.label_tag }}</label>
+	  <input class = "form-control" id = "{{ field.id_for_label }}" max_length = "254" name = "{{ field.name }}"  type = "{{ field.field.widget.input_type }}">
+	</div>
+	{% endfor %}
+	{% if form.errors %}
+	{{ form.errors }}
+	{% endif %}
+	{% csrf_token %}
+	<input class="btn btn-lg btn-primary" type = "submit" value = "submit" />
+  </form>
+{% endblock %}

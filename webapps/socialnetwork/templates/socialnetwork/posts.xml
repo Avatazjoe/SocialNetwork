@@ -1,0 +1,27 @@
+<?xml version = "1.0"?>
+
+<posts>
+	{% for post in posts%}
+	<post>
+	    <postid>postgroup{{ post.pk }}</postid>
+		{% if post.user.username != request.user.username %}
+		<profileurl>{% url 'other_profile' post.user.username %}</profileurl>
+		<username>{{ post.user.username }}</username>
+		{% else %}
+		<profileurl>{% url 'profile' %}</profileurl>
+		<username>{{ post.user.username }}</username>
+		{% endif %}
+		<posttime>{{ post.post_time }}</posttime>
+		{% if post in follow_posts %}
+		<followurl> {% url 'unfollow' post.user.username %} </followurl>
+		<follow> unfollow </follow>
+		{% else %}
+		<followurl> {% url 'follow' post.user.username %} </followurl>
+		<follow> follow </follow>
+		{% endif %}
+		<imgurl> {% url 'photo' post.user.username %} </imgurl>
+		<posttext> {{ post.text }} </posttext>
+		<postidnumber>{{ post.pk }}</postidnumber>
+	</post>
+	{% endfor %}
+</posts>

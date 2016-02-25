@@ -1,0 +1,18 @@
+<?xml version = "1.0"?>
+
+<comments>
+	{% for comment in comments %}
+	<comment>
+	    {% if comment_person != request.user.username %}
+		<profileurl>{% url 'other_profile' comment.comment_person %}</profileurl>
+		<commentername>{{ comment.comment_person }}</commentername>
+		{% else %}
+		<profileurl>{% url 'profile' %}</profileurl>
+		<commentername>{{ comment.comment_person }}</commentername>
+		{% endif %}
+		<imgurl> {% url 'photo' comment.comment_person %} </imgurl>
+		<commenttext>{{ comment.text }}</commenttext>
+		<commenttime>{{ comment.comment_time }}</commenttime>
+	</comment>
+	{% endfor %}
+</comments>
